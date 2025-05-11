@@ -39,16 +39,6 @@ public class Principal {
         String json = newRequest.getJsonResponse();
 
 
-
-        //Gson gson = new Gson();
-
-
-
-
-        //System.out.println(newRequest);
-
-
-
         Map<String, String> paises = LectorJsonMapa.listadoDePaises("src/paises.json");
 
         Map<String, String> paisesEnminusculas = new HashMap<>();
@@ -71,8 +61,10 @@ public class Principal {
             System.out.println(menuEntrada);
             System.out.println("Ingresa el nombre de el pais de origen o escribe salir");
 
+            //No importa si el usuario usa mayusculas o minuscals si el pais existe la app lo encotrara.
+
             String pais = scanner.nextLine().toLowerCase();
-            //pais.toLowerCase();
+
 
             if(pais.equalsIgnoreCase("Salir")){
                 break;
@@ -81,7 +73,7 @@ public class Principal {
             String codigoMoneda = paisesEnminusculas.get(pais);
 
             if (codigoMoneda != null){
-                //System.out.println("El codigo de este pais es: " +codigoMoneda);
+
 
                 if (json != null) {
 
@@ -94,10 +86,11 @@ public class Principal {
                     System.out.println("El tipo de cambio es: "+rates.get(codigoMoneda) +" "+ codigoMoneda);
 
 
-
-                    //scanner.nextLine();
-
                     Double cantidadAConvertir = null;
+
+
+                    //Test para evitar que el usuario ingrese datos incorrectos y se rompa la app.
+                    //El tipo de dato debe ser Double
 
 
                     while (cantidadAConvertir == null){
@@ -121,6 +114,9 @@ public class Principal {
                                 2- Convertir de moneda local a dolares
                                 0- Salir de e sistema
                                 """);
+
+                        //Test para evitar que el usuario ingrese datos incorrectos y se rompa la app.
+                        //El tipo de dato debe ser int
 
                         try {
                             tipoDeCoversion = scanner.nextInt();
@@ -146,16 +142,6 @@ public class Principal {
                         };
                     }
 
-
-
-
-
-
-
-
-
-//            System.out.println("JSON recibido:");
-//            System.out.println(json);
                 } else {
                     System.out.println("Ocurrió un error al obtener el JSON.");
                 }
@@ -164,20 +150,11 @@ public class Principal {
 
             }
 
-
-
-
-
-
-
-
-
-
-            //String tareaSiguiente = "";
-
             while (true) {
                 System.out.println("Escribe 'nueva' para realizar una nueva conversión o 'salir' para cerrar el sistema:");
                 String tareaSiguiente = scanner.nextLine().trim().toLowerCase();
+
+                //El usuario podra crear una nueva busqueda o cerrar el programa.
 
                 if (tareaSiguiente.equals("nueva")) {
                     break; // rompe el bucle y vuelve al principio del menú
@@ -189,16 +166,7 @@ public class Principal {
                 }
             }
 
-
-
         }
 
-
-
-
-
-        //System.out.println(paises);
-
-        //System.out.println(paises.get("Nicaragua"));
     }
 }
