@@ -1,15 +1,13 @@
 import com.google.gson.Gson;
 import exachange.com.modelos.ExchangeRates;
+import exachange.com.modelos.HistorialDeBusqueda;
 import exachange.com.modelos.HttpRequester;
 import exachange.com.modelos.LectorJsonMapa;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLOutput;
-import java.util.HashMap;
-import java.util.InputMismatchException;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Principal {
 
@@ -30,9 +28,17 @@ public class Principal {
                 """;
         Scanner scanner = new Scanner(System.in);
 
-        String paisDeProcedencia;
 
-        int cantidadEnMonedaLocal;
+
+        List<HistorialDeBusqueda> listadoDeBusqueda = new ArrayList<>();
+
+        String pais;
+
+
+
+        //String paisDeProcedencia;
+
+        //int cantidadEnMonedaLocal;
 
         HttpRequester newRequest = new HttpRequester();
 
@@ -63,7 +69,12 @@ public class Principal {
 
             //No importa si el usuario usa mayusculas o minuscals si el pais existe la app lo encotrara.
 
-            String pais = scanner.nextLine().toLowerCase();
+            pais = scanner.nextLine().toLowerCase();
+
+
+            //listadoDeBusqueda.add(historico);
+
+
 
 
             if(pais.equalsIgnoreCase("Salir")){
@@ -72,7 +83,16 @@ public class Principal {
 
             String codigoMoneda = paisesEnminusculas.get(pais);
 
+
+
             if (codigoMoneda != null){
+
+                HistorialDeBusqueda historico = new HistorialDeBusqueda();
+
+
+
+                historico.setPais(pais);
+                historico.setCodigoModena(codigoMoneda);
 
 
                 if (json != null) {
@@ -84,6 +104,7 @@ public class Principal {
                     Map<String, Double> rates = response.conversion_rates;
 
                     System.out.println("El tipo de cambio es: "+rates.get(codigoMoneda) +" "+ codigoMoneda);
+                    historico.setRateLocal(rates.get(codigoMoneda));
 
 
                     Double cantidadAConvertir = null;
@@ -98,6 +119,7 @@ public class Principal {
 
                         try {
                             cantidadAConvertir = scanner.nextDouble();
+                            historico.setCantidad(cantidadAConvertir);
                             scanner.nextLine();
                         } catch (InputMismatchException e){
                             System.out.println("introduce una cantidad valida.");
@@ -120,6 +142,7 @@ public class Principal {
 
                         try {
                             tipoDeCoversion = scanner.nextInt();
+                            historico.setTipoDeConversion(tipoDeCoversion);
                             scanner.nextLine();
                         } catch (InputMismatchException e){
                             System.out.println("introduce una option valida");
@@ -142,29 +165,40 @@ public class Principal {
                         };
                     }
 
+                    while (true) {
+                        System.out.println("Escribe 'nueva' para realizar una nueva conversión o 'salir' para cerrar el sistema:");
+                        String tareaSiguiente = scanner.nextLine().trim().toLowerCase();
+                        historico.setOptionFinal(tareaSiguiente);
+
+                        //El usuario podra crear una nueva busqueda o cerrar el programa.
+
+                        if (tareaSiguiente.equals("nueva")) {
+                            break; // rompe el bucle y vuelve al principio del menú
+                        } else if (tareaSiguiente.equals("salir")) {
+                            System.out.println("Gracias por usar el conversor. ¡Hasta luego!");
+                            return; // termina completamente el programa
+                        } else {
+                            System.out.println("Opción no válida. Por favor escribe 'nueva' o 'salir'.");
+                        }
+                    }
+
+                    listadoDeBusqueda.add(historico);
+
+                    System.out.println(listadoDeBusqueda);
+
                 } else {
                     System.out.println("Ocurrió un error al obtener el JSON.");
                 }
             } else {
+
+
+
+
                 System.out.println("Pais no encontrado");
 
             }
 
-            while (true) {
-                System.out.println("Escribe 'nueva' para realizar una nueva conversión o 'salir' para cerrar el sistema:");
-                String tareaSiguiente = scanner.nextLine().trim().toLowerCase();
 
-                //El usuario podra crear una nueva busqueda o cerrar el programa.
-
-                if (tareaSiguiente.equals("nueva")) {
-                    break; // rompe el bucle y vuelve al principio del menú
-                } else if (tareaSiguiente.equals("salir")) {
-                    System.out.println("Gracias por usar el conversor. ¡Hasta luego!");
-                    return; // termina completamente el programa
-                } else {
-                    System.out.println("Opción no válida. Por favor escribe 'nueva' o 'salir'.");
-                }
-            }
 
         }
 
